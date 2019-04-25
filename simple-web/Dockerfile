@@ -10,10 +10,10 @@ FROM node:12.0.0-alpine
 
 WORKDIR /home/adam/simpleweb
 
-COPY ./package.json ./
+COPY package.json .
 RUN npm install
 # until now, the cache is going to be used if package.json did no change
 # index.js changes will rebuild from this step
-COPY ./ ./
+COPY . .
 
 CMD [ "npm", "start" ]

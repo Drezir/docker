@@ -1,0 +1,9 @@
+version: "3"
+
+services:
+  redis-server: # this is injected by docker into index.js
+    image: "redis"
+  node-app:
+    build: .
+    ports:
+      - "8081:8081"
