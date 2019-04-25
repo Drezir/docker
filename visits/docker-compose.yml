@@ -1,9 +1,10 @@
 version: "3"
-
+# docker-compose ps -> list containers
 services:
   redis-server: # this is injected by docker into index.js
     image: "redis"
   node-app:
+    restart: always # refers to restart policy
     build: .
     ports:
-      - "8081:8081"
+      - "8081:8080" # 8080 has to match port in index.js
