@@ -1,0 +1,20 @@
+# docker build -f Dockerfile.dev -t adam/flow .
+
+# volumes - allow local changes apply to docker container
+# do not map node_modules to local host - first -v parameter
+# docker run -p 3000:3000 -v /home/adam/flow/node_modules -v $(pwd):/home/adam/flow adam/flow
+
+# run tests
+# docker run -it adam/flow npm test
+# run test inside running container
+# docker exec -it CONTAINER_ID npm test # needs running container tho
+
+FROM node:alpine
+
+WORKDIR /home/adam/flow
+
+COPY package.json .
+RUN npm install
+COPY . .
+
+CMD [ "npm", "start" ]

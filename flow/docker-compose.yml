@@ -1,0 +1,20 @@
+version: "3"
+
+services: 
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes: 
+      - /home/adam/flow/node_modules # use node modules from container
+      - .:/home/adam/flow
+  #test: # not good solution - not friendly to user input
+  #  build:
+  #    context: .
+  #    dockerfile: Dockerfile.dev
+  #  volumes: 
+  #    - /home/adam/flow/node_modules # use node modules from container
+  #    - .:/home/adam/flow
+  #  command: ["npm", "test"]
