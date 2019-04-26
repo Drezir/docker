@@ -7,7 +7,7 @@ before_script:
   - cd flow
 
 before_install:
-  - docker build -t adam/docker -f Dockerfile.dev .
+  - docker build -t adam/docker -f ./Dockerfile.dev .
 
 # do not prompt for user input after end of tests
 script:
