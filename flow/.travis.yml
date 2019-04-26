@@ -1,0 +1,9 @@
+sudo: required
+services:
+  - docker
+
+before_install:
+  - docker build -f Dockerfile.dev -t adam/docker .
+
+script:
+  - docker run adam/docker npm test -- --coverage # do not prompt for user input after end of tests
