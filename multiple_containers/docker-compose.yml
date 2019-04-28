@@ -1,25 +1,25 @@
-version: "3"
-
-services: 
-  ngnix:
+# not used for kubernetes
+version: '3'
+services:
+  postgres:
+    image: 'postgres:latest'
+  redis:
+    image: 'redis:latest'
+  nginx:
     restart: always
-    build: 
+    build:
       dockerfile: Dockerfile.dev
       context: ./nginx
-    ports: 
-      - "3050:80" #nginx routing to client or api
-  postgres:
-    image: "postgres:latest"
-  redis:
-    image: "redis:latest"
+    ports:
+      - '3050:80'
   api:
     build:
       dockerfile: Dockerfile.dev
-      context: ./server # context specifies workdir
-    volumes: 
-      - /home/node_modules
-      - ./server:/home # apply local changes to container
-    environment: 
+      context: ./server
+    volumes:
+      - /app/node_modules
+      - ./server:/app
+    environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - PGUSER=postgres
@@ -31,13 +31,16 @@ services:
     build:
       dockerfile: Dockerfile.dev
       context: ./client
-    volumes: 
-      - /home/node_modules
-      - ./client:/home
+    volumes:
+      - /app/node_modules
+      - ./client:/app
   worker:
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     build:
       dockerfile: Dockerfile.dev
       context: ./worker
-    volumes: 
-      - /home/node_modules
-      - ./worker:/home
+    volumes:
+      - /app/node_modules
+      - ./worker:/app

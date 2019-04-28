@@ -1,0 +1,57 @@
+# postgres pod cannot be restarted - data loss; use volumes
+# volume survives container restarts but not POD restart - still not OK for DB
+# solution is persistent volume + persistent volume chain
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres-deployment
+spec:
+  replicas: 1 # number of containers/pods
+  selector:
+    matchLabels:
+      component: postgres # id of deployment
+  template:
+    metadata:
+      labels:
+        component: postgres # id of deployment
+    spec:
+      volumes:
+        - name: postgres-storage
+          persistentVolumeClaim:
+            claimName: database-persistent-volume-claim
+      containers:
+      - name: postgres
+        image: postgres # in docker hub
+        ports:
+          - containerPort: 5432 # default postgres port
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - name: postgres-storage # must be same as the name above
+            mountPath: /var/lib/postgresql/data # default postgres db data folder
+            subPath: postgres # folder inside persisted volume
+        env:
+          # kubectl create secret generic pgpassword --from-literal PGPASSWORD=secretpwd
+          # kubectl get secrets
+          - name: PGPASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: pgpassword
+                key: PGPASSWORD
+---
+# service / networking
+# can be in separate file
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-cluster-ip-service
+spec:
+  selector:
+    component: postgres
+  ports:
+  - port: 5432
+    targetPort: 5432
+
+  

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+spec:
+  replicas: 1 # number of containers/pods
+  selector:
+    matchLabels:
+      component: redis # id of deployment
+  template:
+    metadata:
+      labels:
+        component: redis # id of deployment
+    spec:
+      containers:
+      - name: redis
+        image: redis # in docker hub
+        ports:
+          - containerPort: 6379 # default redis port
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+# service / networking
+# can be in separate file
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-cluster-ip-service
+spec:
+  selector:
+    component: redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+
+  

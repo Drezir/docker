@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-deployment
+spec:
+  replicas: 3 # number of containers/pods
+  selector:
+    matchLabels:
+      component: web # id of deployment
+  template:
+    metadata:
+      labels:
+        component: web # id of deployment
+    spec:
+      containers:
+      - name: client
+        image: adam/multi-client
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 3000 # port mapped to multi-client image
+---
+# service/networking
+# can be in separate file
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-cluster-ip-service
+spec:
+  type: ClusterIP
+  selector:
+    component: web
+  ports:
+  - port: 3000 # port exposed by this service
+    targetPort: 3000 # port exposed in container/pod

@@ -1,0 +1,1 @@
+**Not needed for kubernetes. Usable with docker-compose**
